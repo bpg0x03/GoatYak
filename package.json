@@ -1,0 +1,23 @@
+{
+  "name": "goatyak",
+  "version": "1.0.0",
+  "description": "YikYak esque webapp using node, socket, angular, mongo",
+  "main": "app.js",
+  "scripts": {
+    "test": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bpg0x03/GoatYak.git"
+  },
+  "author": "B Gallagher",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bpg0x03/GoatYak/issues"
+  },
+  "homepage": "https://github.com/bpg0x03/GoatYak#readme",
+  "dependencies": {
+    "mongoose": "^5.5.6",
+    "socket.io": "^2.2.0"
+  }
+}
