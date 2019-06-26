@@ -14,7 +14,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 
-mongoose.connect('mongodb://localhost:27017/db', {useNewUrlParser: true});
+mongoose.connect('mongodb://localhost:27017/db', {useNewUrlParser: true, useCreateIndex: true});
 var db = mongoose.connection;
 db.on('error',console.error.bind(console,'MongoDB Error'));
 
