@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-module.exports = new Schema({
+const Post = new Schema({
    uid: String,
    text: String,
    votes: [{
@@ -15,3 +15,8 @@ module.exports = new Schema({
       }],
    }]
 });
+
+//Set the index argument for posts to delete after 1 minute
+Post.index({"createdAt": 1}, {expireAfterSeconds: 60});
+
+module.exports = mongoose.model('Post', Post)
