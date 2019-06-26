@@ -3,7 +3,8 @@ const express = require('express');
 const app = express();
 const router = express.Router();
 const mongoose = require('mongoose');
-const client = require('socket.io').listen(4000).sockets;
+const server = require('http').Server(app)
+const io = require('socket.io')(server);
 const Post = require('./models/Post');
 const posts = require('./routes/posts')
 
@@ -20,7 +21,7 @@ db.on('error',console.error.bind(console,'MongoDB Error'));
 
 app.use('/poster', posts)
 
-app.listen(8080, function(){
+server.listen(8080, function(){
     console.log("listening on 8080");
 });
 

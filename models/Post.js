@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 
 const Post = new Schema({
    uid: String,
+   createdAt: {type: Date, default: Date.now},
    text: String,
    votes: [{
       uid: String
