@@ -21,21 +21,22 @@ app.use('/poster', posts)//DONT NEED THIS IN FINAL
 
 
 io.on('connection', function(socket){
+    console.log('connected')
     //Should be the first event sent by client. grab top X posts from the DB
     //msg must have count: the number of posts to return
-    socket.on('returnFeed', postcontroller.returnFeed(msg, socket));
+    socket.on('returnFeed', function(msg){postcontroller.returnFeed(msg, socket)});
 
     //Handle the new message event, takes the sending socket as an arg
     //so it can emit back to socket either 'update' or 'error'
-    socket.on('new-message', postcontroller.newPost(msg,socket));
+    socket.on('new-message', function(msg){postcontroller.newPost(msg,socket)});
 
     //Handle the upvote event
-    socket.on('upvote', postcontroller.upvotePost(msg, socket));
+    socket.on('upvote', function(msg){postcontroller.upvotePost(msg, socket)});
 
-    socket.on('downvote', postcontroller.downvotePost(msg, socket));
+    socket.on('downvote', function(msg){postcontroller.downvotePost(msg, socket)});
 
     //Just return more from DB using msg.requestPostsAfterPostID
-    socket.on('loadmore', postcontroller.loadMore(msg, socket));
+    socket.on('loadmore', function(msg){postcontroller.loadMore(msg, socket)});
 });
 
 server.listen(8080, function(){
