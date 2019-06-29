@@ -11,7 +11,24 @@ Brings everything together, contains DB connection and express base routing conf
  The databasing schema and model for interacting with mongo
 
 ### controllers/Post.js 
-Functions for interacting with the database and request/response
+Functions for interacting with the database and request/response\
+Prototypes/parameter expectations:\
+`postcontroller.returnFeed(msg, socket)`\
+msg = { count: Number }\
+\
+`postcontroller.newPost(msg,socket)`\
+msg = Post object, see models/Post.js\
+\
+`postcontroller.upvotePost(msg, socket)`\
+msg = { _id: "POSTID", uid: "USERID" }\
+\
+`postcontroller.downvotePost(msg, socket)`\
+msg = { _id: "POSTID", uid: "USERID" }\
+\
+`postcontroller.loadMore(msg, socket)`\
+msg = { lastID: "POSTID", count: Number }\
+
+
 
 ### routes/posts.js
 
