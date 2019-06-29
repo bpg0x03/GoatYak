@@ -6,13 +6,15 @@ const Post = new Schema({
    createdAt: {type: Date, default: Date.now},
    text: String,
    votes: [{
-      uid: String
+      uid: String,
+      val: Number
    }],
    comments:[{
       uid: String,
       text: String,
       votes: [{
-         uid: String
+         uid: String,
+         val: Number
       }],
    }]
 });
