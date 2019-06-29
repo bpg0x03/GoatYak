@@ -31,43 +31,76 @@ exports.newPost = function(msg, socket){
     });
 }
 
+
+//What if they want to upvote then downvote? need to delete old vote and make new one.
 exports.upvotePost = function(msg, socket){
     //Find post by ID, add UID of client to upvotes list
     // msg must contain uid, and post id
     var vote = {uid: msg.uid, val: 1};
-    Post.findOneAndUpdate(
-        { _id: msg._id},//find by id
-        { $push: { votes: vote } },//push our new vote to the votes array
-        { new: true },//flag makes it return the updated doc 
-        function(err, doc){
-            if(err){
-                socket.emit('error', err);
+    var foundVote = Post.find(
+        {_id: msg._id},
+        {votes: {$in: [vote]}}
+    );
+    if(foundVote){
+        socket.emit('error',"upvoteExists")
+    }
+    else{
+        Post.findOneAndUpdate(
+            { _id: msg._id},//find by id
+            { $push: { votes: vote } },//push our new vote to the votes array
+            { new: true },//flag makes it return the updated doc 
+            function(err, doc){
+                if(err){
+                    socket.emit('error', err);
+                }
+                else{
+                    socket.emit('update', doc)//update the one client
+                    socket.broadcast.emit('updateNotify', "all")//tell every other client to refresh, maybe just send back the post?
+                }
             }
-            else{
-                socket.emit('update', doc)//update the one client
-                socket.broadcast.emit('updateNotify', "all")//tell every other client to refresh, maybe just send back the post?
-            }
-        });
+        );
+    }
 }
 
 exports.downvotePost = function(msg, socket){
     //Same as prev but for downvoting
     //msg again contains uid, post id
     var vote = {uid: msg.uid, val: -1};
-
-    Post.findOneAndUpdate(
+    var foundVote = Post.find(
         {_id: msg._id},
-        { $push: { votes: vote } },
-        { new: true },
-        function(err, doc){
-            if(err){
-                socket.emit('error', err);
-            }
-            else{
-                socket.emit('update', doc);
-                socket.broadcast.emit('updateNotify', "all");
-            }
-        }
+        {votes: {$in: [vote]}}
     );
+    if(foundVote){
+        socket.emit('error',"downvoteExists")
+    }
+    else{
+        Post.findOneAndUpdate(
+            {_id: msg._id},
+            { $push: { votes: vote } },
+            { new: true },
+            function(err, doc){
+                if(err){
+                    socket.emit('error', err);
+                }
+                else{
+                    socket.emit('update', doc);
+                    socket.broadcast.emit('updateNotify', "all");
+                }
+            }
+        );
+    }
 
+}
+
+
+exports.loadMore = function(msg, socket){
+    Post.find({_id: {$lt: msg.lastID}}).sort({_id : -1}).limit(msg.count).exec(function(err, items){
+        if(err){
+            socket.emit('error', err);
+        }   
+    
+        else{
+            socket.emit('update', items)//send all the items back to socket
+        }
+    });
 }
