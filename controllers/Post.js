@@ -19,7 +19,7 @@ exports.newPost = function(msg, socket){
     //Add a post to the database, to be invoked upon server recieving 'post' event from client
     var newPost = new Post(msg.post);
     console.log(msg);
-    usercontroller.verifyUser(msg, socket, function(){
+    usercontroller.verifyUser(msg.user, socket, function(user){
         newPost.save( function(err,doc){
             if(err){
                 socket.emit('dbError', err);

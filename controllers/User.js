@@ -7,7 +7,7 @@ exports.verifyUser = function(msg, socket, callback){
     User.findOne( { uid: msg.uid }, function(err, user){
         if(user){
             if(user.secret == msg.secret){
-                callback()
+                callback(user)
             }
             else{
                 module.exports.newUser(socket)
