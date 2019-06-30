@@ -1,6 +1,6 @@
 const path = require('path')
 const Post = require("../models/Post")
-
+const usercontroller = require("./User")
 exports.returnFeed = function(msg, socket) {
     //Return a JSON representation of all posts in the top 50(?) for when client initially connects
     //msg.count is the number of documents to return
@@ -17,17 +17,19 @@ exports.returnFeed = function(msg, socket) {
 
 exports.newPost = function(msg, socket){
     //Add a post to the database, to be invoked upon server recieving 'post' event from client
-    var newPost = new Post(msg);
+    var newPost = new Post(msg.post);
     console.log(msg);
-    newPost.save( function(err){
-        if(err){
-            socket.emit('dbError', err);
-        }
-        else{
-            socket.emit('update', newPost);//send back the new post to update the one person that sent it
-            //maybe just send back the post? then database interactions only have to happen when clients connect originally
-            socket.broadcast.emit('updateNotify',"all")//tell every other client to refresh
-        }
+    usercontroller.verifyUser(msg, socket, function(){
+        newPost.save( function(err,doc){
+            if(err){
+                socket.emit('dbError', err);
+            }
+            else{
+                socket.emit('update', newPost);//send back the new post to update the one person that sent it
+                //maybe just send back the post? then database interactions only have to happen when clients connect originally
+                socket.broadcast.emit('updateNotify',"all")//tell every other client to refresh
+            }
+        });
     });
 }
 
@@ -70,12 +72,16 @@ exports.upvotePost = function(msg, socket){
     
 }
 
+exports.commentPost = function(msg, socket){
+
+}
+
 exports.downvotePost = function(msg, socket){
     //Same as prev but for downvoting
     //msg again contains uid, post id
     var vote = {uid: msg.uid, val: -1};
 
-    
+
     Post.exists(
         { $and: [ {_id: msg._id}, {votes: { $elemMatch: { uid: msg.uid } } } ] }, 
         function(err, foundVote){

@@ -3,11 +3,11 @@ const User = require("../models/User")
 const rand = require('crypto-random-string')
 
 //check msg.UID and msg.nonce against db, if not existant, generate new one
-exports.verifyUser = function(msg, socket){
+exports.verifyUser = function(msg, socket, callback){
     User.findOne( { uid: msg.uid }, function(err, user){
         if(user){
             if(user.secret == msg.secret){
-                socket.emit('userValid', msg)
+                callback()
             }
             else{
                 module.exports.newUser(socket)
