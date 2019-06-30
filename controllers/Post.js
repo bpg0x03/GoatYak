@@ -37,7 +37,6 @@ exports.newPost = function(msg, socket){
 }
 
 
-//What if they want to upvote then downvote? need to delete old vote and make new one.
 exports.votePost = function(msg, socket){
     //Find post by ID, add UID of client to upvotes list
     // msg must contain uid, and post id
