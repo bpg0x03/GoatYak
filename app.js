@@ -33,10 +33,11 @@ io.on('connection', function(socket){
     //so it can emit back to socket either 'update' or 'error'
     socket.on('new-message', function(msg){postcontroller.newPost(msg,socket)});
 
-    //Handle the upvote event
-    socket.on('upvote', function(msg){postcontroller.upvotePost(msg, socket)});
+    //Handle the vote event
+    socket.on('vote', function(msg){postcontroller.votePost(msg, socket)});
 
-    socket.on('downvote', function(msg){postcontroller.downvotePost(msg, socket)});
+    //Handle comments
+    socket.on('comment', function(msg){postcontroller.commentPost(msg, socket)})
 
     //Just return more from DB using msg.requestPostsAfterPostID
     socket.on('loadmore', function(msg){postcontroller.loadMore(msg, socket)});

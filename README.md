@@ -28,11 +28,9 @@ msg = { count: Number }\
 `postcontroller.newPost(msg,socket)`\
 msg = Post object, see models/Post.js\
 \
-`postcontroller.upvotePost(msg, socket)`\
-msg = { _id: "POSTID", uid: "USERID" }\
+`postcontroller.votePost(msg, socket)`\
+msg = { _id: "POSTID", uid: "USERID", val: 1 or -1 }\
 \
-`postcontroller.downvotePost(msg, socket)`\
-msg = { _id: "POSTID", uid: "USERID" }\
 \
 `postcontroller.loadMore(msg, socket)`\
 msg = { lastID: "POSTID", count: Number }\

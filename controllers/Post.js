@@ -35,37 +35,52 @@ exports.newPost = function(msg, socket){
 
 
 //What if they want to upvote then downvote? need to delete old vote and make new one.
-exports.upvotePost = function(msg, socket){
+exports.votePost = function(msg, socket){
     //Find post by ID, add UID of client to upvotes list
     // msg must contain uid, and post id
-    var vote = {uid: msg.uid, val: 1};
+    var vote = {uid: msg.uid, val: msg.val};
 
     Post.exists(
         { $and: [ {_id: msg._id}, {votes: { $elemMatch: { uid: msg.uid } } } ] }, 
         function(err, foundVote){
             console.log(foundVote)
             if(foundVote){
-                socket.emit('dbError',"upvoteExists")
-                console.log('upvote found')
+                Post.updateOne(
+                    { $and: [ {_id: msg._id}, {votes: { $elemMatch: { uid: msg.uid } } } ] },
+                    { $set: {'votes.$.val': msg.val } },
+                    //{ arrayFilters: [ {'element': {uid: msg.uid}} ]},
+                    function(err, voteObj){
+                        if(err){
+                            console.log(err)
+                        }
+                        else{
+                            console.log("successChangedVote")
+                            socket.emit('update', voteObj)
+                            socket.emit('updateNotify', "all")
+                        }
+                    }
+                )
             }
             else{
-                Post.findOneAndUpdate(
+                Post.updateOne(
                     { _id: msg._id},//find by id
-                    { $push: { votes: vote } },//push our new vote to the votes array
+                    { $push: { votes: vote } },
                     { new: true, useFindAndModify: false },//flag makes it return the updated doc 
                     function(err, doc){
                         if(err){
                             console.log(err)
-                            socket.emit('dbError', err);
                         }
                         else{
-                            console.log("success")
-                            socket.emit('update', doc)//update the one client
-                            socket.broadcast.emit('updateNotify', "all")//tell every other client to refresh, maybe just send back the post?
+                            console.log('successNewVote')
+                            socket.emit('update', doc)
+                            socket.broadcast.emit('updateNotify', "all")
                         }
+
                     }
-                );
+                )
+
             }
+                
         }
 
     );
@@ -73,44 +88,6 @@ exports.upvotePost = function(msg, socket){
 }
 
 exports.commentPost = function(msg, socket){
-
-}
-
-exports.downvotePost = function(msg, socket){
-    //Same as prev but for downvoting
-    //msg again contains uid, post id
-    var vote = {uid: msg.uid, val: -1};
-
-
-    Post.exists(
-        { $and: [ {_id: msg._id}, {votes: { $elemMatch: { uid: msg.uid } } } ] }, 
-        function(err, foundVote){
-            console.log(foundVote)
-            if(foundVote){
-                socket.emit('dbError',"upvoteExists")
-                console.log('upvote found')
-            }
-            else{
-                Post.findOneAndUpdate(
-                    { _id: msg._id},//find by id
-                    { $push: { votes: vote } },//push our new vote to the votes array
-                    { new: true, useFindAndModify: false },//flag makes it return the updated doc 
-                    function(err, doc){
-                        if(err){
-                            console.log(err)
-                            socket.emit('dbError', err);
-                        }
-                        else{
-                            console.log("success")
-                            socket.emit('update', doc)//update the one client
-                            socket.broadcast.emit('updateNotify', "all")//tell every other client to refresh, maybe just send back the post?
-                        }
-                    }
-                );
-            }
-        }
-
-    );
 
 }
 
