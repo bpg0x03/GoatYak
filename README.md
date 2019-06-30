@@ -10,6 +10,15 @@ Brings everything together, contains DB connection and express base routing conf
 ### models/Post.js
  The databasing schema and model for interacting with mongo
 
+ ### models/User.js
+ The databasing schema and model for user objects. Will contain UID, server issued secret, and last updated time. Old users
+ will be pruned, Users won't be able to post too
+
+### controllers/User.js
+Functions for interacting with users db\
+`usercontroller.getUser(msg, socket)`\
+msg = { uid: String, nonce: String }
+
 ### controllers/Post.js 
 Functions for interacting with the database and request/response\
 Prototypes/parameter expectations:\

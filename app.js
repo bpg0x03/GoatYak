@@ -6,6 +6,7 @@ const server = require('http').Server(app)
 const io = require('socket.io')(server);
 const posts = require('./routes/posts')//DONT NEED THIS IN FINAL
 const postcontroller = require('./controllers/Post')
+const usercontroller = require('./controllers/User')
 
 // parse URLencoded
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -22,7 +23,9 @@ app.use('/poster', posts)//DONT NEED THIS IN FINAL
 
 io.on('connection', function(socket){
     console.log('connected')
-    //Should be the first event sent by client. grab top X posts from the DB
+
+    socket.on('getUser', function(msg){usercontroller.getUser(msg, socket)})
+    //Should be the second event sent by client. grab top X posts from the DB
     //msg must have count: the number of posts to return
     socket.on('returnFeed', function(msg){postcontroller.returnFeed(msg, socket)});
 
