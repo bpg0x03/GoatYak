@@ -20,6 +20,6 @@ const Post = new Schema({
 });
 
 //Set the index argument for posts to delete after 1 minute
-Post.index({"createdAt": 1}, {expireAfterSeconds: 60});
+Post.index({"createdAt": 1}, {expireAfterSeconds: 3600});
 
 module.exports = mongoose.model('Post', Post)

@@ -6,7 +6,7 @@ exports.returnFeed = function(msg, socket) {
     //msg.count is the number of documents to return
     Post.find().sort( { _id: -1 } ).limit(msg.count).exec(function(err, items){
         if(err){
-            socket.emit('error', err);
+            socket.emit('dbError', err);
         }
 
         else{
@@ -21,7 +21,7 @@ exports.newPost = function(msg, socket){
     console.log(msg);
     newPost.save( function(err){
         if(err){
-            socket.emit('error', err);
+            socket.emit('dbError', err);
         }
         else{
             socket.emit('update', newPost);//send back the new post to update the one person that sent it
@@ -37,66 +37,82 @@ exports.upvotePost = function(msg, socket){
     //Find post by ID, add UID of client to upvotes list
     // msg must contain uid, and post id
     var vote = {uid: msg.uid, val: 1};
-    var foundVote = Post.find(
-        {_id: msg._id},
-        {votes: {$in: [vote]}}
-    );
-    if(foundVote){
-        socket.emit('error',"upvoteExists")
-    }
-    else{
-        Post.findOneAndUpdate(
-            { _id: msg._id},//find by id
-            { $push: { votes: vote } },//push our new vote to the votes array
-            { new: true },//flag makes it return the updated doc 
-            function(err, doc){
-                if(err){
-                    socket.emit('error', err);
-                }
-                else{
-                    socket.emit('update', doc)//update the one client
-                    socket.broadcast.emit('updateNotify', "all")//tell every other client to refresh, maybe just send back the post?
-                }
+
+    Post.exists(
+        { $and: [ {_id: msg._id}, {votes: { $elemMatch: { uid: msg.uid } } } ] }, 
+        function(err, foundVote){
+            console.log(foundVote)
+            if(foundVote){
+                socket.emit('dbError',"upvoteExists")
+                console.log('upvote found')
             }
-        );
-    }
+            else{
+                Post.findOneAndUpdate(
+                    { _id: msg._id},//find by id
+                    { $push: { votes: vote } },//push our new vote to the votes array
+                    { new: true, useFindAndModify: false },//flag makes it return the updated doc 
+                    function(err, doc){
+                        if(err){
+                            console.log(err)
+                            socket.emit('dbError', err);
+                        }
+                        else{
+                            console.log("success")
+                            socket.emit('update', doc)//update the one client
+                            socket.broadcast.emit('updateNotify', "all")//tell every other client to refresh, maybe just send back the post?
+                        }
+                    }
+                );
+            }
+        }
+
+    );
+    
 }
 
 exports.downvotePost = function(msg, socket){
     //Same as prev but for downvoting
     //msg again contains uid, post id
     var vote = {uid: msg.uid, val: -1};
-    var foundVote = Post.find(
-        {_id: msg._id},
-        {votes: {$in: [vote]}}
-    );
-    if(foundVote){
-        socket.emit('error',"downvoteExists")
-    }
-    else{
-        Post.findOneAndUpdate(
-            {_id: msg._id},
-            { $push: { votes: vote } },
-            { new: true },
-            function(err, doc){
-                if(err){
-                    socket.emit('error', err);
-                }
-                else{
-                    socket.emit('update', doc);
-                    socket.broadcast.emit('updateNotify', "all");
-                }
+
+    
+    Post.exists(
+        { $and: [ {_id: msg._id}, {votes: { $elemMatch: { uid: msg.uid } } } ] }, 
+        function(err, foundVote){
+            console.log(foundVote)
+            if(foundVote){
+                socket.emit('dbError',"upvoteExists")
+                console.log('upvote found')
             }
-        );
-    }
+            else{
+                Post.findOneAndUpdate(
+                    { _id: msg._id},//find by id
+                    { $push: { votes: vote } },//push our new vote to the votes array
+                    { new: true, useFindAndModify: false },//flag makes it return the updated doc 
+                    function(err, doc){
+                        if(err){
+                            console.log(err)
+                            socket.emit('dbError', err);
+                        }
+                        else{
+                            console.log("success")
+                            socket.emit('update', doc)//update the one client
+                            socket.broadcast.emit('updateNotify', "all")//tell every other client to refresh, maybe just send back the post?
+                        }
+                    }
+                );
+            }
+        }
+
+    );
 
 }
 
 
 exports.loadMore = function(msg, socket){
-    Post.find({_id: {$lt: msg.lastID}}).sort({_id : -1}).limit(msg.count).exec(function(err, items){
+    Post.find({_id: {$gt: msg.lastID}}).sort({_id : -1}).limit(msg.count).exec(function(err, items){
         if(err){
-            socket.emit('error', err);
+            socket.emit('dbError', err);
         }   
     
         else{
