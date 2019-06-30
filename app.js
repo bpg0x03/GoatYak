@@ -24,7 +24,7 @@ app.use('/poster', posts)//DONT NEED THIS IN FINAL
 io.on('connection', function(socket){
     console.log('connected')
 
-    socket.on('getUser', function(msg){usercontroller.getUser(msg, socket)})
+    socket.on('getUser', function(msg){usercontroller.verifyUser(msg, socket)})
     //Should be the second event sent by client. grab top X posts from the DB
     //msg must have count: the number of posts to return
     socket.on('returnFeed', function(msg){postcontroller.returnFeed(msg, socket)});

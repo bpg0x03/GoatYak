@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const User = new Schema({
    uid: String,
-   nonce: String,
+   secret: String,
    lastUpdated: {type: Date, default: Date.now}
 });
 
