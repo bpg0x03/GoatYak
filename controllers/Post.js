@@ -1,6 +1,9 @@
 const path = require('path')
 const Post = require("../models/Post")
 const usercontroller = require("./User")
+const uid = require('./UID')
+
+
 exports.returnFeed = function(msg, socket) {
     //Return a JSON representation of all posts in the top 50(?) for when client initially connects
     //msg.count is the number of documents to return

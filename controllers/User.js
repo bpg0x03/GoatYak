@@ -1,7 +1,7 @@
 const path = require('path')
 const User = require("../models/User")
 const rand = require('crypto-random-string')
-
+const UID = require('./UID')
 //check msg.UID and msg.nonce against db, if not existant, generate new one
 exports.verifyUser = function(msg, socket, callback){
     User.findOne( { uid: msg.uid }, function(err, user){
@@ -21,7 +21,7 @@ exports.verifyUser = function(msg, socket, callback){
 
 exports.newUser = function(socket){
     var user = new User({
-        uid: rand({length: 32}),//make this something more readable like from a wordlist
+        uid: UID.getUID(),
         secret: rand({length: 32})
     });
 
