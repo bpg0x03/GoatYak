@@ -29,7 +29,7 @@ msg = { count: Number }\
 msg = Post object, see models/Post.js\
 \
 `postcontroller.votePost(msg, socket)`\
-msg = { _id: "POSTID", uid: "USERID", val: 1 or -1 , user: USER OBJ for verification}\
+msg = { _id: "POSTID", val: 1 or -1 , user: USER OBJ for verification}\
 \
 \
 `postcontroller.loadMore(msg, socket)`\

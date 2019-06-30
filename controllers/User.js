@@ -7,6 +7,7 @@ exports.verifyUser = function(msg, socket, callback){
     User.findOne( { uid: msg.uid }, function(err, user){
         if(user){
             if(user.secret == msg.secret){
+                //add user time verification here
                 callback(user)
             }
             else{
