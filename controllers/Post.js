@@ -41,52 +41,52 @@ exports.votePost = function(msg, socket){
     //Find post by ID, add UID of client to upvotes list
     // msg must contain uid, and post id
     var vote = {uid: msg.uid, val: msg.val};
-
-    Post.exists(
-        { $and: [ {_id: msg._id}, {votes: { $elemMatch: { uid: msg.uid } } } ] }, 
-        function(err, foundVote){
-            console.log(foundVote)
-            if(foundVote){
-                Post.updateOne(
-                    { $and: [ {_id: msg._id}, {votes: { $elemMatch: { uid: msg.uid } } } ] },
-                    { $set: {'votes.$.val': msg.val } },
-                    //{ arrayFilters: [ {'element': {uid: msg.uid}} ]},
-                    function(err, voteObj){
-                        if(err){
-                            console.log(err)
+    usercontroller.verifyUser(msg.user, socket, function(user){
+        Post.exists(
+            { $and: [ {_id: msg._id}, {votes: { $elemMatch: { uid: msg.uid } } } ] }, 
+            function(err, foundVote){
+                console.log(foundVote)
+                if(foundVote){
+                    Post.updateOne(
+                        { $and: [ {_id: msg._id}, {votes: { $elemMatch: { uid: msg.uid } } } ] },
+                        { $set: {'votes.$.val': msg.val } },
+                        //{ arrayFilters: [ {'element': {uid: msg.uid}} ]},
+                        function(err, voteObj){
+                            if(err){
+                                console.log(err)
+                            }
+                            else{
+                                console.log("successChangedVote")
+                                socket.emit('update', voteObj)
+                                socket.emit('updateNotify', "all")
+                            }
                         }
-                        else{
-                            console.log("successChangedVote")
-                            socket.emit('update', voteObj)
-                            socket.emit('updateNotify', "all")
-                        }
-                    }
-                )
-            }
-            else{
-                Post.updateOne(
-                    { _id: msg._id},//find by id
-                    { $push: { votes: vote } },
-                    { new: true, useFindAndModify: false },//flag makes it return the updated doc 
-                    function(err, doc){
-                        if(err){
-                            console.log(err)
-                        }
-                        else{
-                            console.log('successNewVote')
-                            socket.emit('update', doc)
-                            socket.broadcast.emit('updateNotify', "all")
-                        }
-
-                    }
-                )
-
-            }
-                
-        }
-
-    );
+                    )
+                }
+                else{
+                    Post.updateOne(
+                        { _id: msg._id},//find by id
+                        { $push: { votes: vote } },
+                        { new: true, useFindAndModify: false },//flag makes it return the updated doc 
+                        function(err, doc){
+                            if(err){
+                                console.log(err)
+                            }
+                            else{
+                                console.log('successNewVote')
+                                socket.emit('update', doc)
+                                socket.broadcast.emit('updateNotify', "all")
+                            }
     
+                        }
+                    )
+    
+                }
+                    
+            }
+    
+        );
+    });
 }
 
 exports.commentPost = function(msg, socket){
