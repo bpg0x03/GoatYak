@@ -4,6 +4,19 @@
 YikYak esque web app using socket.io, node.js, mongodb, and angular
 
 ## Project Structure
+
+##Angular
+### Post Class
+Defines fields and whatnot for posts
+### Post Service
+Contains the observable to the actual socket io integration as well as the methods for new posts comments votes etc
+SelectedPost field will be passed into post context 
+### Post-List-Component
+Listing out all the posts and their upvote counts etc
+contains new post button and functionality
+### Post-Context-Component
+Showing the posts comments and changing view to just the one post contains new comment button and functionality
+
 ### app.js
 Brings everything together, contains DB connection and express base routing configs
 
