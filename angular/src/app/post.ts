@@ -1,5 +1,7 @@
-export class Post {
-    uid: String;
+import { DefaultUrlSerializer } from '@angular/router';
+
+export class Post  {
+   uid: String;
    createdAt: Date;
    text: String;
    votes: [{
@@ -14,4 +16,9 @@ export class Post {
          val: Number
       }]
    }]
+
+   deserialze (input: any) {
+      Object.assign(this, input)
+      return this
+   }
 }

@@ -1,1 +1,7 @@
-<p>post-list works!</p>
+<div *ngIf='user'>
+        <h1>{{user.uid}}</h1>
+</div>
+
+<div class='sidenav'>
+    <span [class.selected]='postId === currentPostId' *ngFor='let postId of posts | async'>{{ postId }}</span>
+</div>

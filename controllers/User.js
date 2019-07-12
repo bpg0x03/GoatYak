@@ -8,7 +8,8 @@ exports.verifyUser = function(msg, socket, callback){
         if(user){
             if(user.secret == msg.secret){
                 //add user time verification here
-                callback(user)
+                if(callback)
+                    callback(user)
             }
             else{
                 module.exports.newUser(socket)
