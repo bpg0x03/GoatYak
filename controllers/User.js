@@ -4,9 +4,10 @@ const rand = require('crypto-random-string')
 const UID = require('./UID')
 //check msg.UID and msg.nonce against db, if not existant, generate new one
 exports.verifyUser = function(msg, socket, callback){
+    msg = JSON.parse(msg)
     User.findOne( { uid: msg.uid }, function(err, user){
         if(user){
-            if(user.secret == msg.secret){
+            if(user.secret === msg.secret){
                 //add user time verification here
                 if(callback)
                     callback(user)

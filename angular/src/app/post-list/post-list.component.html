@@ -1,7 +1,8 @@
-<div *ngIf='user'>
-        <h1>{{user.uid}}</h1>
-</div>
-
 <div class='sidenav'>
-    <span [class.selected]='postId === currentPostId' *ngFor='let postId of posts | async'>{{ postId }}</span>
+    <div *ngIf='user'>
+        <h1>{{user.uid}}</h1>
+    </div>
+    <span  *ngFor='let postId of posts '>{{ postId.text }}</span>
+    <input #box (keyup.enter)="newPost(box.value)">
+
 </div>

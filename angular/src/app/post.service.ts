@@ -9,12 +9,12 @@ import { CookieService } from 'ngx-cookie-service';
   providedIn: 'root'
 })
 export class PostService {
-  currentPost: Post
   currentUser: User
 
   //Observable for list of posts
-  posts = this.socket.fromEvent<string[]>('update')
-
+  posts = this.socket.fromEvent<Post[]>('update')
+  postAdder = this.socket.fromEvent<Post>('addOne')
+  postUpdater = this.socket.fromEvent<Post>('updateOne')
   //Observable + subscription for updating client cookies with new user when server gives 
   userEvent = this.socket.fromEvent<string>('newUser').subscribe( val => {
     this.currentUser = (new User).deserialze(val)
@@ -30,19 +30,22 @@ export class PostService {
   getUser(){
     if(this.cookieService.check('USER')){
       this.currentUser = (new User).deserialze(JSON.parse(this.cookieService.get('USER')))
-      this.socket.emit('getUser', JSON.parse(this.cookieService.get('USER')))
+      this.socket.emit('getUser', JSON.stringify(JSON.parse(this.cookieService.get('USER'))))
     }
     else{
       this.socket.emit('getUser', "{uid: '', secret: ''}")
     }
   }
 
+  getPosts(){
+    this.socket.emit('returnFeed', {count: 50})
+  }
   setCurrentPost(id: string){
     //Change post
   }
 
   newPost(text: string){
-    //emit new post based on passed text
+    this.socket.emit('new-message', {user: JSON.stringify(this.currentUser), post:{uid: this.currentUser.uid, text: text} })
   }
 
   votePost(vote: number){

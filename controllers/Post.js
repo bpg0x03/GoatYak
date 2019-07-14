@@ -7,6 +7,7 @@ const uid = require('./UID')
 exports.returnFeed = function(msg, socket) {
     //Return a JSON representation of all posts in the top 50(?) for when client initially connects
     //msg.count is the number of documents to return
+    //msg = JSON.parse(msg)
     Post.find().sort( { _id: -1 } ).limit(msg.count).exec(function(err, items){
         if(err){
             socket.emit('dbError', err);
@@ -21,14 +22,13 @@ exports.returnFeed = function(msg, socket) {
 exports.newPost = function(msg, socket){
     //Add a post to the database, to be invoked upon server recieving 'post' event from client
     var newPost = new Post(msg.post);
-    console.log(msg);
     usercontroller.verifyUser(msg.user, socket, function(user){
         newPost.save( function(err,doc){
             if(err){
                 socket.emit('dbError', err);
             }
             else{
-                socket.emit('update', newPost);//send back the new post to update the one person that sent it
+                socket.emit('addOne', newPost);//send back the new post to update the one person that sent it
                 //maybe just send back the post? then database interactions only have to happen when clients connect originally
                 socket.broadcast.emit('updateNotify',"all")//tell every other client to refresh
             }

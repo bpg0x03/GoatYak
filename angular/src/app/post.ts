@@ -1,6 +1,7 @@
 import { DefaultUrlSerializer } from '@angular/router';
 
 export class Post  {
+   _id: String;
    uid: String;
    createdAt: Date;
    text: String;
