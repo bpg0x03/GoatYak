@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router'
 import { Observable, Subscription } from 'rxjs';
 import { User } from '../user'
 import { Post } from '../post'
@@ -19,7 +20,7 @@ export class PostListComponent implements OnInit, OnDestroy {
   //Subscription for adding posts without another DB query
   private _postAdder: Subscription
 
-  constructor(private postService: PostService) { }
+  constructor(private postService: PostService, private router: Router) { }
 
   ngOnInit() {
     //Get all posts from the observable
@@ -37,6 +38,15 @@ export class PostListComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy() {
 
+  }
+
+  selectPost(post: Post){
+    this.postService.setCurrentPost(post)
+    this.router.navigate(['/post'])
+  }
+
+  votePost(post:Post, val: Number){
+    this.postService.votePost(post, val)
   }
   newPost(text: string){
     this.postService.newPost(text)

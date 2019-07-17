@@ -10,8 +10,9 @@ import { CookieService } from 'ngx-cookie-service';
 })
 export class PostService {
   currentUser: User
+  selectedPost: Post
 
-  //Observable for list of posts
+  //Observables for adding and updating posts
   posts = this.socket.fromEvent<Post[]>('update')
   postAdder = this.socket.fromEvent<Post>('addOne')
   postUpdater = this.socket.fromEvent<Post>('updateOne')
@@ -40,15 +41,15 @@ export class PostService {
   getPosts(){
     this.socket.emit('returnFeed', {count: 50})
   }
-  setCurrentPost(id: string){
-    //Change post
+  setCurrentPost(post: Post){
+    this.selectedPost = post
   }
 
   newPost(text: string){
     this.socket.emit('new-message', {user: JSON.stringify(this.currentUser), post:{uid: this.currentUser.uid, text: text} })
   }
 
-  votePost(vote: number){
+  votePost(post: Post, val: Number){
     //emit new vote
   }
 }

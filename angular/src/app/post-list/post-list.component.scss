@@ -1,23 +1,42 @@
-.sidenav {
-  position: fixed;
+.postcontainer {
   height: 100%;
   width: 1000px;
   top: 0;
   left: 0;
-  background-color: #111111;
-  overflow-x: hidden;
+  //background-color: #111111;
   padding-top: 20px;  
-    span {
-      padding: 6px  8px  6px  16px;
-      text-decoration: none;
-      font-size: 25px;
-      font-family: 'Roboto', Tahoma, Geneva, Verdana, sans-serif;
-      color: #818181;
-      display: block;
-    }.selected {
-      color: #e1e1e1;
-    }:hover {
-      color: #f1f1f1;
-      cursor: pointer;
-    }
+  clear: both;
+}
+
+.postLine{
+  display: block;
+  clear: both;
+  padding-top: 5px
+
+}
+.postButton{
+  display:block;
+  float:right;
+}
+
+.voteContainer{
+  display: block;
+  padding: 0px 0px 0px 10px;
+  float:left;
+}
+.postText{
+  padding: 15px  2px  15px  30px;
+  text-decoration: none;
+  font-size: 25px;
+  font-family: 'Roboto', Tahoma, Geneva, Verdana, sans-serif;
+  color: #818181;
+  display: block;
+  
+}
+.postText:hover {
+  color: #f1f1f1;
+  cursor: pointer;
+}
+.postText.selected {
+  color: #e1e1e1;
 }
