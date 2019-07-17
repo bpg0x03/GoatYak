@@ -16,7 +16,7 @@
     <div class='postLine' *ngFor='let post of posts '>
         <div class='voteContainer'>
             <mdb-icon fas icon='arrow-up'></mdb-icon><br/>
-            {{ post.votes }}<br/>
+            {{ post.votes.length }}<br/>
             <mdb-icon fas icon='arrow-down'></mdb-icon>
         </div>
         <div class='postText' (click) = 'selectPost(post)'>

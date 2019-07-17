@@ -47,9 +47,10 @@ exports.votePost = function(msg, socket){
             function(err, foundVote){
                 console.log(foundVote)
                 if(foundVote){
-                    Post.updateOne(
+                    Post.findOneAndUpdate(
                         { $and: [ {_id: msg._id}, {votes: { $elemMatch: { uid: msg.user.uid } } } ] },
                         { $set: {'votes.$.val': msg.val } },
+                        { new: true, useFindAndModify: false },
                         function(err, voteObj){
                             if(err){
                                 console.log(err)
@@ -63,7 +64,7 @@ exports.votePost = function(msg, socket){
                     )
                 }
                 else{
-                    Post.updateOne(
+                    Post.findOneAndUpdate(
                         { _id: msg._id},//find by id
                         { $push: { votes: vote } },
                         { new: true, useFindAndModify: false },//flag makes it return the updated doc 
