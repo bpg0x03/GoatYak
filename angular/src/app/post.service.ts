@@ -34,7 +34,7 @@ export class PostService {
       this.socket.emit('getUser', JSON.stringify(JSON.parse(this.cookieService.get('USER'))))
     }
     else{
-      this.socket.emit('getUser', "{uid: '', secret: ''}")
+      this.socket.emit('getUser', JSON.stringify({uid:'', secret:''}))
     }
   }
 

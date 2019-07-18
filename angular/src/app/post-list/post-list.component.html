@@ -1,27 +1,33 @@
-<div class='postcontainer'>
+<div class='maincontainer'>
     <div *ngIf='user'>
         <h1>{{user.uid}}</h1>
     </div>
     <!--Basic textarea-->
-    <div>
-        <div class="md-form postInput">
-            <textarea #box type="text" id="form7" class="md-textarea form-control" mdbInput></textarea>
-            <label for="form7">Create New Post</label>
+    <div class='card newbox'>
+        <div class='card-body'>
+            <div class="md-form postInput">
+                <input #box type="text" id="form7" class="md-textarea form-control" mdbInput maxlength="140">
+                <label for="form7">Create New Post</label>
+            </div>
+            <div class='characterCount'>{{ 140 - box.value.length }}</div>
+            <a mdbBtn floating="true" size="lg" gradient="red" mdbWavesEffect (click)="newPost(box.value)" class='postButton'>
+                    <mdb-icon fas icon="plus"></mdb-icon>
+            </a>
         </div>
-        <a mdbBtn floating="true" size="lg" gradient="red" mdbWavesEffect (click)="newPost(box.value)" class='postButton'>
-                <mdb-icon fas icon="plus"></mdb-icon>
-        </a>
     </div>
     
-    <div class='postLine' *ngFor='let post of posts '>
-        <div class='voteContainer'>
-            <mdb-icon fas icon='arrow-up'></mdb-icon><br/>
-            {{ post.votes.length }}<br/>
-            <mdb-icon fas icon='arrow-down'></mdb-icon>
+    <div class='postcontainer'>
+        <div class='spacer'></div>
+        <div class='card postItem' *ngFor='let post of posts '>
+            <div class='voteContainer'>
+                <i class='material-icons md-dark md-inactive'>arrow_upward</i><br/>
+                {{ post.votes.length }}<br/>
+                <i class='material-icons md-dark md-inactive'>arrow_downward</i>
+                
+            </div>
+            <div class='postText' (click) = 'selectPost(post)'>
+                    {{ post.text }}
+            </div> 
         </div>
-        <div class='postText' (click) = 'selectPost(post)'>
-                {{ post.text }}
-        </div> 
     </div>
-
 </div>
