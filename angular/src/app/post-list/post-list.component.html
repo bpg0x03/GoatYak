@@ -18,16 +18,18 @@
     
     <div class='postcontainer'>
         <div class='spacer'></div>
-        <div class='card postItem' *ngFor='let post of posts '>
-            <div class='voteContainer'>
-                <i class='material-icons md-dark md-inactive'>arrow_upward</i><br/>
-                {{ post.votes.length }}<br/>
-                <i class='material-icons md-dark md-inactive'>arrow_downward</i>
-                
+        <div class='card' *ngFor='let post of posts '>
+            <div class='card-body postItem'>
+                <div class='voteContainer'>
+                    <a (click)='votePost(post, 1)'><i [className]="votedBool(post, 1) ? 'material-icons md-dark md-active' : 'material-icons md-dark md-inactive'">arrow_upward</i></a><br/>
+                    {{ sumVotes(post) }}<br/>
+                    <a (click)='votePost(post, -1)'><i [className]="votedBool(post, -1) ? 'material-icons md-dark md-active' : 'material-icons md-dark md-inactive'">arrow_downward</i></a>
+                    
+                </div>
+                <div class='postText' (click) = 'selectPost(post)'>
+                        {{ post.text }}
+                </div> 
             </div>
-            <div class='postText' (click) = 'selectPost(post)'>
-                    {{ post.text }}
-            </div> 
         </div>
     </div>
 </div>

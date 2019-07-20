@@ -50,6 +50,6 @@ export class PostService {
   }
 
   votePost(post: Post, val: Number){
-    //emit new vote
+    this.socket.emit('vote', {user: JSON.stringify(this.currentUser), _id: post._id, val: val})
   }
 }

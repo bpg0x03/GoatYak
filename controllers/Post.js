@@ -45,7 +45,6 @@ exports.votePost = function(msg, socket){
         Post.exists(
             { $and: [ {_id: msg._id}, {votes: { $elemMatch: { uid: msg.user.uid } } } ] }, 
             function(err, foundVote){
-                console.log(foundVote)
                 if(foundVote){
                     Post.findOneAndUpdate(
                         { $and: [ {_id: msg._id}, {votes: { $elemMatch: { uid: msg.user.uid } } } ] },
@@ -56,8 +55,7 @@ exports.votePost = function(msg, socket){
                                 console.log(err)
                             }
                             else{
-                                console.log("successChangedVote")
-                                socket.emit('update', voteObj)
+                                socket.emit('updateOne', voteObj)
                                 socket.emit('updateNotify', "all")
                             }
                         }
@@ -73,8 +71,7 @@ exports.votePost = function(msg, socket){
                                 console.log(err)
                             }
                             else{
-                                console.log('successNewVote')
-                                socket.emit('update', doc)
+                                socket.emit('updateOne', doc)
                                 socket.broadcast.emit('updateNotify', "all")
                             }
     
