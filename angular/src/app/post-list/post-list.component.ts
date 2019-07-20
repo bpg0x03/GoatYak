@@ -35,6 +35,17 @@ export class PostListComponent implements OnInit, OnDestroy {
     this.user = this.postService.currentUser
     //Request initial posts
     this.postService.getPosts()
+    /*
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(displayLocationInfo);
+    }
+    
+    function displayLocationInfo(position) {
+      const lng = position.coords.longitude;
+      const lat = position.coords.latitude;
+    
+      console.log(`longitude: ${ lng } | latitude: ${ lat }`);
+    }*/
   }
   ngOnDestroy() {
 
