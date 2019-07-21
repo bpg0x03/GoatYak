@@ -34,7 +34,8 @@ export class PostListComponent implements OnInit, OnDestroy {
     //Copy service user to component for use in UI stuff (user listing on top of page)
     this.user = this.postService.currentUser
     //Request initial posts
-    this.postService.getPosts()
+    var self = this
+    setTimeout(() => self.waitPosts(), 250)
     /*
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(displayLocationInfo);
@@ -50,7 +51,9 @@ export class PostListComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
 
   }
-
+  waitPosts(){
+    this.postService.getPosts()
+  }
   selectPost(post: Post){
     this.postService.setCurrentPost(post)
     this.router.navigate(['/post'])
@@ -71,6 +74,7 @@ export class PostListComponent implements OnInit, OnDestroy {
 
   //FIX BELOW
   votedBool(post: Post, val: number){
+    console.log(post.votes)
     if(post.votes.filter(this.passUser(this.user, val)).length > 0){
       return true;
     }

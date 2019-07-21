@@ -20,6 +20,7 @@ export class PostService {
   userEvent = this.socket.fromEvent<string>('newUser').subscribe( val => {
     this.currentUser = (new User).deserialze(val)
     this.cookieService.set('USER', JSON.stringify(this.currentUser))
+    document.location.reload()
   });
 
   constructor(private socket: Socket, private cookieService: CookieService) { }

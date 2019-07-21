@@ -30,7 +30,7 @@ exports.newPost = function(msg, socket){
             else{
                 socket.emit('addOne', newPost);//send back the new post to update the one person that sent it
                 //maybe just send back the post? then database interactions only have to happen when clients connect originally
-                socket.broadcast.emit('updateNotify',"all")//tell every other client to refresh
+                socket.broadcast.emit('addOne',newPost)//tell every other client to refresh
             }
         });
     });
@@ -40,14 +40,13 @@ exports.newPost = function(msg, socket){
 exports.votePost = function(msg, socket){
     //Find post by ID, add UID of client to upvotes list
     // msg must contain uid, and post id
-    var vote = {uid: msg.user.uid, val: msg.val};
     usercontroller.verifyUser(msg.user, socket, function(user){
         Post.exists(
-            { $and: [ {_id: msg._id}, {votes: { $elemMatch: { uid: msg.user.uid } } } ] }, 
+            { $and: [ {_id: msg._id}, {votes: { $elemMatch: { uid: JSON.parse(msg.user).uid } } } ] }, 
             function(err, foundVote){
                 if(foundVote){
                     Post.findOneAndUpdate(
-                        { $and: [ {_id: msg._id}, {votes: { $elemMatch: { uid: msg.user.uid } } } ] },
+                        { $and: [ {_id: msg._id}, {votes: { $elemMatch: { uid: JSON.parse(msg.user).uid } } } ] },
                         { $set: {'votes.$.val': msg.val } },
                         { new: true, useFindAndModify: false },
                         function(err, voteObj){
@@ -56,7 +55,7 @@ exports.votePost = function(msg, socket){
                             }
                             else{
                                 socket.emit('updateOne', voteObj)
-                                socket.emit('updateNotify', "all")
+                                socket.broadcast.emit('updateOne', voteObj)
                             }
                         }
                     )
@@ -64,7 +63,7 @@ exports.votePost = function(msg, socket){
                 else{
                     Post.findOneAndUpdate(
                         { _id: msg._id},//find by id
-                        { $push: { votes: vote } },
+                        { $push: { votes: {uid: JSON.parse(msg.user).uid, val:msg.val} } },
                         { new: true, useFindAndModify: false },//flag makes it return the updated doc 
                         function(err, doc){
                             if(err){
@@ -72,7 +71,7 @@ exports.votePost = function(msg, socket){
                             }
                             else{
                                 socket.emit('updateOne', doc)
-                                socket.broadcast.emit('updateNotify', "all")
+                                socket.broadcast.emit('updateOne', doc)
                             }
     
                         }
