@@ -1,56 +1,55 @@
-//TODO: Incorporate user validation into each method
+// TODO: Incorporate user validation into each method
 import { Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
-import { Post } from './post' 
-import { User } from './user'
+import { IUser } from '../../../models/User';
+import { IPost } from '../../../models/Post';
 import { CookieService } from 'ngx-cookie-service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PostService {
-  currentUser: User
-  selectedPost: Post
+  currentUser: IUser;
+  selectedPost: IPost;
 
-  //Observables for adding and updating posts
-  posts = this.socket.fromEvent<Post[]>('update')
-  postAdder = this.socket.fromEvent<Post>('addOne')
-  postUpdater = this.socket.fromEvent<Post>('updateOne')
-  //Observable + subscription for updating client cookies with new user when server gives 
-  userEvent = this.socket.fromEvent<string>('newUser').subscribe( val => {
-    this.currentUser = (new User).deserialze(val)
-    this.cookieService.set('USER', JSON.stringify(this.currentUser))
-    document.location.reload()
+  // Observables for adding and updating posts
+  posts = this.socket.fromEvent<IPost[]>('update');
+  postAdder = this.socket.fromEvent<IPost>('addOne');
+  postUpdater = this.socket.fromEvent<IPost>('updateOne');
+  // Observable + subscription for updating client cookies with new user when server gives
+  userEvent = this.socket.fromEvent<IUser>('newUser').subscribe(val => {
+    this.currentUser = val;
+    this.cookieService.set('USER', JSON.stringify(this.currentUser));
+    document.location.reload();
   });
 
   constructor(private socket: Socket, private cookieService: CookieService) { }
 
-  //If the user cookie is set, attempt to verify it on backend
-  //Backend Emit newUser if the cookie is an invalid user, which is handled by the sub
-  //above
-  //If no user cookie, verify against null and get a new user
-  getUser(){
-    if(this.cookieService.check('USER')){
-      this.currentUser = (new User).deserialze(JSON.parse(this.cookieService.get('USER')))
-      this.socket.emit('getUser', JSON.stringify(JSON.parse(this.cookieService.get('USER'))))
+  // If the user cookie is set, attempt to verify it on backend
+  // Backend Emit newUser if the cookie is an invalid user, which is handled by the sub
+  // above
+  // If no user cookie, verify against null and get a new user
+  getUser() {
+    if (this.cookieService.check('USER')) {
+      this.currentUser = JSON.parse(this.cookieService.get('USER')) as IUser;
+      this.socket.emit('getUser', this.currentUser);
+    } else {
+      this.socket.emit('getUser', {});
     }
-    else{
-      this.socket.emit('getUser', JSON.stringify({uid:'', secret:''}))
-    }
   }
 
-  getPosts(){
-    this.socket.emit('returnFeed', {count: 50})
+  getPosts() {
+    this.socket.emit('returnFeed', { count: 50 });
   }
-  setCurrentPost(post: Post){
-    this.selectedPost = post
-  }
-
-  newPost(text: string){
-    this.socket.emit('new-message', {user: JSON.stringify(this.currentUser), post:{uid: this.currentUser.uid, text: text} })
+  setCurrentPost(post: IPost) {
+    this.selectedPost = post;
   }
 
-  votePost(post: Post, val: Number){
-    this.socket.emit('vote', {user: JSON.stringify(this.currentUser), _id: post._id, val: val})
+  newPost(text: string) {
+    this.socket.emit('new-message', { user: this.currentUser, post: { uid: this.currentUser.uid, text } });
+  }
+
+  votePost(post: IPost, val: number) {
+    this.socket.emit('vote', { user: this.currentUser, _id: post._id, val });
   }
 }

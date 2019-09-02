@@ -1,4 +1,4 @@
-const randNumber = function(max) {
+const randNumber = function (max: number) {
     return Math.floor(Math.random() * Math.floor(max));
 }
 const animals = [
@@ -230,6 +230,6 @@ const animals = [
 
 const colors = ['Black', 'Gray', 'White', 'Red', 'Purple', 'Pink', 'Green', 'Yellow', 'Orange', 'Brown', 'Blue', 'Turquoise']
 
-exports.getUID = function(){
+export function getUID () {
     return colors[Math.floor(Math.random() * colors.length)] + animals[Math.floor(Math.random() * animals.length)] + '#' + randNumber(99999);
 }
