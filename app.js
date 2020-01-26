@@ -39,6 +39,8 @@ io.on('connection', function(socket){
     //Handle comments
     socket.on('comment', function(msg){postcontroller.commentPost(msg, socket)})
 
+    //Handle comment votes
+    socket.on('voteComment', function(msg){postcontroller.voteComment(msg, socket)})
     //Just return more from DB using msg.requestPostsAfterPostID
     socket.on('loadmore', function(msg){postcontroller.loadMore(msg, socket)});
 });

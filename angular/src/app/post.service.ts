@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
 import { Post } from './post' 
 import { User } from './user'
+import { mComment } from './mcomment';
 import { CookieService } from 'ngx-cookie-service';
 import { BehaviorSubject } from 'rxjs';
 
@@ -53,8 +54,11 @@ export class PostService {
   }
 
   newComment(post: Post, text: string){
-    // this.socket.emit('comment', {
-    // })
+    this.socket.emit('comment', {user: JSON.stringify(this.currentUser), post: post, text: text })
+  }
+
+  voteComment(post: Post, comment: mComment, val: Number){
+    this.socket.emit('voteComment', {user: JSON.stringify(this.currentUser), postid: post._id, commentid: comment._id, val: val })
   }
 
   votePost(post: Post, val: Number){

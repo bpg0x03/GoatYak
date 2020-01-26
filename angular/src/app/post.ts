@@ -1,5 +1,5 @@
 import { DefaultUrlSerializer } from '@angular/router';
-
+import { mComment } from './mcomment'; 
 export class Post  {
    _id: String;
    uid: String;
@@ -9,14 +9,7 @@ export class Post  {
       uid: String,
       val: Number
    }];
-   comments:[{
-      uid: String,
-      text: String,
-      votes: [{
-         uid: String,
-         val: Number
-      }]
-   }]
+   comments:[mComment]
 
    deserialze (input: any) {
       Object.assign(this, input)

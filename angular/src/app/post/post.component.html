@@ -24,3 +24,19 @@
         </a>
     </div>
 </div>
+<div class='card postCard' *ngFor='let comment of thePost.comments '>
+    <div class='card-title titleText' style="padding:5px;">
+        {{ comment.uid }}
+    </div>
+    <div class='card-body postItem'>
+        <div class='voteContainer'>
+            <a (click)='votePost(comment, 1)'><i [className]="votedBool(comment, 1) ? 'material-icons md-dark md-active' : 'material-icons md-dark md-inactive'">arrow_upward</i></a><br/>
+            {{ sumVotes(comment) }}<br/>
+            <a (click)='votePost(comment, -1)'><i [className]="votedBool(comment, -1) ? 'material-icons md-dark md-active' : 'material-icons md-dark md-inactive'">arrow_downward</i></a>
+            
+        </div>
+        <div class='postText'>
+                {{ comment.text }}
+        </div> 
+    </div>
+</div>

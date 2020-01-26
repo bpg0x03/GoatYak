@@ -1,9 +1,9 @@
-import { Component, OnInit, ChangeDetectorRef, ApplicationRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ApplicationRef, AfterViewInit } from '@angular/core';
 import { PostService } from '../post.service';
 import { Observable, Subscription } from 'rxjs';
 import { Post } from '../post';
 import { User } from '../user';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-post',
@@ -17,8 +17,8 @@ export class PostComponent implements OnInit {
   posts: Post[];
 
 
-  constructor(private postService: PostService, private af: ApplicationRef) { }
-
+  constructor(private postService: PostService, private af: ApplicationRef, private router: Router) { }
+  ng
   ngOnInit() {
     this.postService.selectedPost.subscribe(newpost => this.thePost = newpost)
     //Get all posts from the observable
@@ -28,11 +28,18 @@ export class PostComponent implements OnInit {
     //Subscription for pushing new post to front of array
     this.postService.postAdder.subscribe(newOne => this.posts.unshift(newOne))
     //Subscription for upding posts that are already in array (Untested!!) Also need it to sum the array of votes
+    //Both subscriptions are pretty bad practice...
     this.postService.postUpdater.subscribe(newOne => this.posts[this.posts.findIndex( post => post._id === newOne._id )] = newOne)
+    this.postService.postUpdater.subscribe(newOne => {
+      if(newOne._id === this.thePost._id){this.thePost=newOne}
+    })
     //Copy service user to component for use in UI stuff (user listing on top of page)
+    this.postService.selectedPost.subscribe(post => this.thePost = post)
     this.user = this.postService.currentUser
-    //Request initial posts
-    setTimeout(() => this.waitPosts(), 250)
+    //For some reason, thePost is still defined, but empty? Either way, we dont need to show empty detail
+    if(!this.thePost.votes || !this.thePost){
+      this.router.navigate(['/'])
+    }
   }
 
   votePost(post:Post, val: number){

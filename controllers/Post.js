@@ -92,7 +92,7 @@ exports.commentPost = function(msg, socket){
             {   $push: { 
                     comments: {
                         uid: JSON.parse(msg.user).uid,
-                        text: JSON.parse(msg.comment).text
+                        text: msg.text
                     }
                 }
             },
@@ -108,6 +108,11 @@ exports.commentPost = function(msg, socket){
     });
 }
 
+exports.voteComment = function(msg, socket){
+    usercontroller.verifyUser(msg.user, socket, function(user){
+
+    })
+}
 
 exports.loadMore = function(msg, socket){
     Post.find({_id: {$gt: msg.lastID}}).sort({_id : -1}).limit(msg.count).exec(function(err, items){
