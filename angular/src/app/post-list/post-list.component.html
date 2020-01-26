@@ -6,11 +6,11 @@
     <div class='card newbox'>
         <div class='card-body'>
             <div class="md-form postInput">
-                <input #box type="text" id="form7" class="md-textarea form-control" mdbInput maxlength="140">
+                <input #box type="text" id="form7" class="md-textarea form-control" (keyup.enter)="newPost(box.value);box.value=''" mdbInput maxlength="140">
                 <label for="form7">Create New Post</label>
             </div>
             <div class='characterCount'>{{ 140 - box.value.length }}</div>
-            <a mdbBtn floating="true" size="lg" gradient="red" mdbWavesEffect (click)="newPost(box.value)" class='postButton'>
+            <a mdbBtn floating="true" size="lg" gradient="red" mdbWavesEffect (click)="newPost(box.value);box.value=''" class='postButton'>
                     <mdb-icon fas icon="plus"></mdb-icon>
             </a>
         </div>
@@ -18,7 +18,10 @@
     
     <div class='postcontainer'>
         <div class='spacer'></div>
-        <div class='card' *ngFor='let post of posts '>
+        <div class='card postCard' *ngFor='let post of posts '>
+            <div class='card-title titleText' style="padding:5px;">
+                {{ post.uid }}
+            </div>
             <div class='card-body postItem'>
                 <div class='voteContainer'>
                     <a (click)='votePost(post, 1)'><i [className]="votedBool(post, 1) ? 'material-icons md-dark md-active' : 'material-icons md-dark md-inactive'">arrow_upward</i></a><br/>

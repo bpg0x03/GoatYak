@@ -4,13 +4,15 @@ import { Socket } from 'ngx-socket-io';
 import { Post } from './post' 
 import { User } from './user'
 import { CookieService } from 'ngx-cookie-service';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PostService {
   currentUser: User
-  selectedPost: Post
+  selectedPostBS = new BehaviorSubject(new Post());
+  selectedPost = this.selectedPostBS.asObservable();
 
   //Observables for adding and updating posts
   posts = this.socket.fromEvent<Post[]>('update')
@@ -43,11 +45,16 @@ export class PostService {
     this.socket.emit('returnFeed', {count: 50})
   }
   setCurrentPost(post: Post){
-    this.selectedPost = post
+    this.selectedPostBS.next(post);
   }
 
   newPost(text: string){
     this.socket.emit('new-message', {user: JSON.stringify(this.currentUser), post:{uid: this.currentUser.uid, text: text} })
+  }
+
+  newComment(post: Post, text: string){
+    // this.socket.emit('comment', {
+    // })
   }
 
   votePost(post: Post, val: Number){

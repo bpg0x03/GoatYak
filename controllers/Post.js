@@ -86,7 +86,26 @@ exports.votePost = function(msg, socket){
 }
 
 exports.commentPost = function(msg, socket){
-
+    usercontroller.verifyUser(msg.user, socket, function(user){
+        Post.findOneAndUpdate(
+            {_id: msg.post._id},
+            {   $push: { 
+                    comments: {
+                        uid: JSON.parse(msg.user).uid,
+                        text: JSON.parse(msg.comment).text
+                    }
+                }
+            },
+            {new: true, useFindAndModify: false},
+            function(err, doc){
+                if(err){console.log(err)}
+                else{
+                    socket.emit('updateOne', doc)
+                    socket.broadcast.emit('updateOne', doc)
+                }
+            }
+        );
+    });
 }
 
 

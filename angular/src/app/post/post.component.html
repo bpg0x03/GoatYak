@@ -1,1 +1,26 @@
-<p>post works!</p>
+<div class='card postCard' *ngIf='thePost'>
+    <div class='card-title titleText' style="padding:5px;">
+        {{ thePost.uid }}
+    </div>
+    <div class='card-body postItem'>
+        <div class='voteContainer'>
+            <a (click)='votePost(thePost, 1)'><i [className]="votedBool(thePost, 1) ? 'material-icons md-dark md-active' : 'material-icons md-dark md-inactive'">arrow_upward</i></a><br/>
+            {{ sumVotes(thePost) }}<br/>
+            <a (click)='votePost(thePost, -1)'><i [className]="votedBool(thePost, -1) ? 'material-icons md-dark md-active' : 'material-icons md-dark md-inactive'">arrow_downward</i></a>
+            
+        </div>
+        <div class='postText'>
+                {{ thePost.text }}
+        </div> 
+    </div>
+    <div class='card-footer'>
+        <div class="md-form postInput">
+            <input #box type="text" id="form7" class="md-textarea form-control" (keyup.enter)="newComment(box.value);box.value=''" mdbInput maxlength="140">
+            <label for="form7">Create New Comment</label>
+        </div>
+        <div class='characterCount'>{{ 140 - box.value.length }}</div>
+        <a mdbBtn floating="true" size="lg" gradient="red" mdbWavesEffect (click)="newComment(box.value);box.value=''" class='postButton'>
+                <mdb-icon fas icon="plus"></mdb-icon>
+        </a>
+    </div>
+</div>

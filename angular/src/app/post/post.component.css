@@ -1,0 +1,74 @@
+@import 'https://fonts.googleapis.com/icon?family=Material+Icons';
+.maincontainer {
+    height: 100%;
+    width: 100%;
+    padding-top: 20px;  
+    clear: both;
+    display: flex;
+    flex-direction: column;
+    align-items:center;
+    justify-content: center;
+  }
+  .postcontainer{
+    margin-top: 50px;
+    border-top: 2px solid #dee2e6 !important;
+    width: 50%
+  }
+  .spacer{
+    margin-top: 50px;
+    width: 50%
+  }
+  .newbox{
+    width: 50%
+  }
+  .characterCount{
+    display: block;
+    float: left;
+  }
+  .postButton{
+    display: block;
+    float:right;
+  }
+  .postItem{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: left;
+    margin-top:10px;
+  
+  }
+  .postCard{
+    margin: 10px;
+  }
+  .voteContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: left;
+    padding: 0px 0px 0px 10px;
+  }
+  .postText{
+    padding: 15px  2px  15px  30px;
+    text-decoration: none;
+    font-size: 20px;
+    font-family: 'Roboto', Tahoma, Geneva, Verdana, sans-serif;
+    color: #818181;
+    display: block;
+  }
+  .titleText{
+    text-decoration: none;
+    font-size: 16px;
+    font-family: 'Roboto', Tahoma, Geneva, Verdana, sans-serif;
+    color: #818181;
+    display: block;
+  }
+  .postText:hover {
+    color: #f1f1f1;
+    cursor: pointer;
+  }
+  .postText.selected {
+    color: #e1e1e1;
+  }
+  .material-icons.md-dark.md-inactive { color: rgba(0, 0, 0, 0.26); }
+  .material-icons.md-dark.md-active { color: rgba(0, 0, 0, 0.65); }
+  .material-icons.md-dark:hover { color: rgba(0, 0, 0, 0.65); }
